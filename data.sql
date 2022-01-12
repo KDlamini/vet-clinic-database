@@ -61,3 +61,24 @@ ROLLBACK TRANSACTION;
 /* End of transaction 3 */
 /* check if table went back to the state before transaction.*/
 SELECT * FROM animals;
+
+/* Start of transaction 4 */
+
+BEGIN TRANSACTION;
+
+DELETE FROM animals WHERE date_of_birth > '2022-01-01';
+SAVE TRANSACTION SP1;
+SELECT * FROM animals;
+
+UPDATE animals SET weight_kg = weight_kg * -1;
+ROLLBACK TRANSACTION SP1;
+SELECT * FROM animals;
+
+UPDATE animals SET weight_kg = weight_kg * -1 WHERE weight_kg < 0;
+SELECT * FROM animals;
+
+COMMIT TRANSACTION;
+
+/* End of transaction 4 */
+/* Verify all updates after transaction commit */
+SELECT * FROM animals;
