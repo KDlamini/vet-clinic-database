@@ -15,3 +15,14 @@ INSERT INTO animals VALUES (5, 'Charmander', 'Feb, 8, 2020', 0, FALSE, -11),
 (8, 'Angemon', 'Jun, 12, 2005', 1, TRUE, -45),
 (9, 'Boarmon', 'Jun, 7, 2005', 7, TRUE, 20.4),
 (10, 'Blossom', 'Oct, 13, 1998', 3, TRUE, 17);
+
+/* Start of transaction */
+BEGIN TRANSACTION;
+UPDATE animals SET species = 'unspecified';
+SAVE TRANSACTION SP1; /* "SAVEPOINT" gives syntax error so i used "SAVE TRANSACTION" instead */
+SELECT * FROM animals; /* verify that species column is updated */
+ROLLBACK TRANSACTION; /* clear all transaction block updates */
+/* End of transaction */
+
+
+SELECT * FROM animals; /* check if table went back to the state before transaction.*/
