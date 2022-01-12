@@ -28,7 +28,6 @@ ROLLBACK TRANSACTION;
 
 /* End of transaction 1 */
 /* check if table went back to the state before transaction.*/
-
 SELECT * FROM animals;
 
 /* Start of transaction 2 */
@@ -47,5 +46,18 @@ COMMIT TRANSACTION;
 
 /* End of transaction 2 */
 /* Verify all updates after transaction commit */
+SELECT * FROM animals;
 
-SELECT * FROM animals; 
+/* Start of transaction 3 */
+
+BEGIN TRANSACTION;
+
+DELETE FROM animals;
+SAVE TRANSACTION SP1;
+SELECT * FROM animals;
+
+ROLLBACK TRANSACTION;
+
+/* End of transaction 3 */
+/* check if table went back to the state before transaction.*/
+SELECT * FROM animals;
