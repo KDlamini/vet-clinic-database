@@ -24,6 +24,76 @@ SELECT * FROM animals WHERE name NOT LIKE '%Gabumon%';
 /* Find all animals with a weight between 10.4kg and 17.3kg (including the animals with the weights that equals precisely 10.4kg or 17.3kg) */
 SELECT * FROM animals WHERE weight_kg BETWEEN 10.4 AND 17.3;
 
+/* TRANSACTIONS */
+
+/* Start of transaction 1 */
+
+BEGIN TRANSACTION;
+
+UPDATE animals SET species = 'unspecified';
+SAVE TRANSACTION SP1;
+SELECT * FROM animals;
+
+ROLLBACK TRANSACTION;
+
+/* End of transaction 1 */
+/* check if table went back to the state before transaction.*/
+SELECT * FROM animals;
+
+/* Start of transaction 2 */
+
+BEGIN TRANSACTION;
+
+UPDATE animals SET species = 'digimon' WHERE name LIKE '%mon';
+SAVE TRANSACTION SP1;
+SELECT * FROM animals;
+
+UPDATE animals SET species = 'pokemon' WHERE name NOT LIKE '%mon';
+SAVE TRANSACTION SP2;
+SELECT * FROM animals;
+
+COMMIT TRANSACTION;
+
+/* End of transaction 2 */
+/* Verify all updates after transaction commit */
+SELECT * FROM animals;
+
+/* Start of transaction 3 */
+
+BEGIN TRANSACTION;
+
+DELETE FROM animals;
+SAVE TRANSACTION SP1;
+SELECT * FROM animals;
+
+ROLLBACK TRANSACTION;
+
+/* End of transaction 3 */
+/* check if table went back to the state before transaction.*/
+SELECT * FROM animals;
+
+/* Start of transaction 4 */
+
+BEGIN TRANSACTION;
+
+DELETE FROM animals WHERE date_of_birth > '2022-01-01';
+SAVE TRANSACTION SP1;
+SELECT * FROM animals;
+
+UPDATE animals SET weight_kg = weight_kg * -1;
+ROLLBACK TRANSACTION SP1;
+SELECT * FROM animals;
+
+UPDATE animals SET weight_kg = weight_kg * -1 WHERE weight_kg < 0;
+SELECT * FROM animals;
+
+COMMIT TRANSACTION;
+
+/* End of transaction 4 */
+/* Verify all updates after transaction commit */
+SELECT * FROM animals;
+
+
 /* AGGREGATES QUERIES. */
 
 SELECT COUNT(*) FROM animals;
