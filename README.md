@@ -32,7 +32,7 @@ Give a ⭐️ if you like this project!
 
 ## Acknowledgments
 
-- This project is part module 3 in the Microverse study program.
+- This project is part module 4 in the Microverse study program.
 - Thanks to the Microverse team for the great curriculum.
 - Thanks to Code Reviewers for the insightful feedback.
 - A great thanks to My coding partners, morning session team, and standup team Partners for their contributions.
