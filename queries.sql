@@ -85,8 +85,7 @@ COMMIT TRANSACTION;
 --Verify all updates after transaction commit
 SELECT * FROM animals;
 
-
-/* AGGREGATES QUERIES. */
+/* ================================ AGGREGATES ================================= */
 
 SELECT COUNT(*) FROM animals;
 SELECT COUNT(escape_attempts) FROM animals WHERE escape_attempts = 0;
@@ -102,7 +101,7 @@ FROM animals
 WHERE date_of_birth BETWEEN 'Jan, 1, 1990' AND 'Dec, 31, 2000'
 GROUP BY species;
 
-/* JOIN QUERIES. */
+/* ================================ JOIN QUERIES ================================= */
 
 -- Animals that belong to Melody Pond?
 SELECT * FROM animals
@@ -149,3 +148,83 @@ LEFT JOIN owners
 ON animals.owner_id = owners.id
 GROUP BY owners.full_name
 ORDER BY COUNT(owners.full_name) DESC;
+
+/* ================================ VISITS ================================= */
+
+-- The last animal seen by William Tatcher
+SELECT animals.name, visits.date_of_visit FROM visits
+    JOIN animals 
+ON animals.id = visits.animal_id
+    JOIN vets 
+ON vets.id = visits.vet_id
+    WHERE vets.name = 'William Tatcher'
+ORDER BY visits.date_of_visit DESC
+LIMIT 1;
+
+-- Animals visits for Stephanie Mendez
+SELECT DISTINCT animals.name FROM visits
+    JOIN animals 
+ON animals.id = visits.animal_id
+    JOIN vets 
+ON vets.id = visits.vet_id
+    WHERE vets.name = 'Stephanie Mendez';
+
+-- List of vets and their specialties, including vets with no specialties.
+SELECT vets.name as vet_name, species.name as specialities FROM vets
+	JOIN specializations 
+ON vets.id = specializations.vet_id OR vets.id != specializations.vet_id
+	JOIN species 
+ON specializations.species_id = species.id;
+
+-- Animals that visited Stephanie Mendez between April 1st and August 30th, 2020.
+SELECT animals.name, visits.date_of_visit FROM visits
+   JOIN animals 
+ON animals.id = visits.animal_id
+   JOIN vets 
+ON vets.id = visits.vet_id
+WHERE vets.name = 'Stephanie Mendez' AND date_of_visit > '2020-04-01' AND date_of_visit < '2020-08-30'
+
+-- Animal that has the most visits to vets
+SELECT animals.name, count(animals.name) FROM visits
+	JOIN animals 
+ON animals.id = visits.animal_id
+GROUP BY (animals.name)
+ORDER BY count(animals.name) DESC
+
+-- Animal that was Maisy Smith's first visit
+SELECT animals.name, visits.date_of_visit FROM visits
+	JOIN animals 
+ON animals.id = visits.animal_id
+	JOIN vets 
+ON vets.id = visits.vet_id
+    WHERE vets.name = 'Maisy Smith'
+ORDER BY visits.date_of_visit ASC
+LIMIT 1;
+
+-- Details for most recent visit: animal information, vet information, and date of visit.
+SELECT animals.*, vets.*, visits.date_of_visit FROM visits
+	JOIN animals 
+ON animals.id = visits.animal_id
+	JOIN vets 
+ON vets.id = visits.vet_id
+ORDER BY visits.date_of_visit DESC
+LIMIT 1;
+
+-- Animals who visits were with a vet that did not specialize in that animal's species
+SELECT count(*) FROM visits
+	JOIN animals 
+ON animals.id = visits.animal_id
+	JOIN vets 
+ON vets.id = visits.vet_id
+WHERE animals.species_id NOT IN (SELECT species_id FROM specializations WHERE vet_id = vets.id);
+
+-- Specialities for Maisy smith
+SELECT species.name as speciality, count(*) FROM visits
+	JOIN animals 
+ON animals.id = visits.animal_id
+	JOIN species 
+ON animals.species_id = species.id
+	JOIN vets 
+ON vets.id = visits.vet_id
+WHERE vets.name = 'Maisy Smith'
+GROUP BY species.name;
