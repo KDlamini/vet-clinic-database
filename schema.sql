@@ -52,3 +52,10 @@ ALTER TABLE animals DROP species;
 ALTER TABLE animals ADD species_id INT REFERENCES species(id);
 ALTER TABLE animals ADD owner_id INT REFERENCES owners(id);
  
+ -- Add a new column for performance audit
+ALTER TABLE owners ADD COLUMN email VARCHAR(120);
+
+-- Add indexing to tables to improve performance
+CREATE INDEX ON visits (animal_id);
+CREATE INDEX ON visits (vet_id);
+CREATE INDEX ON owners (email);
